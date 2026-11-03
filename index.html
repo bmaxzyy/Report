@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Submit a report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="intro">
+      <h1>Submit your report</h1>
+      <p>Your report is saved to your own folder in Google Drive. Weekly and monthly reports are kept apart.</p>
+    </header>
+
+    <form id="report-form" novalidate>
+      <!-- Report type -->
+      <fieldset class="type-switch" aria-label="Report type">
+        <input type="radio" name="type" id="type-weekly" value="weekly" checked>
+        <label for="type-weekly"><strong>Weekly</strong><span>Every week</span></label>
+        <input type="radio" name="type" id="type-monthly" value="monthly">
+        <label for="type-monthly"><strong>Monthly</strong><span>End of month</span></label>
+      </fieldset>
+
+      <div class="row two">
+        <div class="field">
+          <label for="name">Full name</label>
+          <input id="name" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="email">Work email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required>
+        </div>
+      </div>
+
+      <!-- Period: weekly shows a date, monthly shows month + year -->
+      <div class="field" id="period-weekly">
+        <label for="week-ending">Week ending</label>
+        <input id="week-ending" type="date">
+      </div>
+      <div class="row two" id="period-monthly" hidden>
+        <div class="field">
+          <label for="month">Month</label>
+          <select id="month"></select>
+        </div>
+        <div class="field">
+          <label for="year">Year</label>
+          <input id="year" type="number" min="2020" max="2100">
+        </div>
+      </div>
+
+      <!-- Where it will be saved -->
+      <div class="path" aria-live="polite">
+        <span class="path-label">Will be saved to</span>
+        <code id="path-preview"></code>
+      </div>
+
+      <div class="field">
+        <label for="completed">What you completed</label>
+        <textarea id="completed" name="completed" rows="5" required></textarea>
+      </div>
+      <div class="field">
+        <label for="blockers">Challenges and blockers <span class="optional">optional</span></label>
+        <textarea id="blockers" name="blockers" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="next" id="next-label">Plans for next week <span class="optional">optional</span></label>
+        <textarea id="next" name="next" rows="3"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="files">Attachments <span class="optional">optional, 10 MB total</span></label>
+        <input id="files" type="file" multiple>
+        <ul id="file-list" class="file-list"></ul>
+      </div>
+
+      <div class="field code">
+        <label for="code">Access code</label>
+        <input id="code" name="code" type="password" autocomplete="off" required>
+        <small>Ask your manager if you don't have it.</small>
+      </div>
+
+      <p id="error" class="error" role="alert" hidden></p>
+      <button type="submit" id="submit">Save report</button>
+    </form>
+
+    <section id="done" class="done" hidden aria-live="polite">
+      <h2>Report saved</h2>
+      <p>It is now in <code id="done-path"></code></p>
+      <button type="button" id="again">Submit another report</button>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

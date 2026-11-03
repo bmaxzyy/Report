@@ -1,0 +1,148 @@
+:root {
+  --paper: #f2f4f6;
+  --card: #ffffff;
+  --ink: #15222c;
+  --muted: #5d6b76;
+  --line: #d5dce1;
+  --weekly: #0f6e5b;
+  --monthly: #3a3f9e;
+  --accent: var(--weekly);
+  --danger: #b3261e;
+  --radius: 10px;
+}
+body[data-type="monthly"] { --accent: var(--monthly); }
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 1rem/1.55 "IBM Plex Sans", system-ui, sans-serif;
+}
+
+.shell {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 48px 20px 80px;
+}
+
+h1, h2 {
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+}
+h1 { font-size: clamp(2rem, 6vw, 2.75rem); line-height: 1.05; }
+.intro p { margin: 0 0 32px; color: var(--muted); max-width: 52ch; }
+
+form, .done {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px;
+}
+
+/* ---- report type switch ---- */
+.type-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  border: 0;
+  padding: 0;
+  margin: 0 0 24px;
+}
+.type-switch input { position: absolute; opacity: 0; pointer-events: none; }
+.type-switch label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color .15s, background-color .15s;
+}
+.type-switch strong { font-family: "Bricolage Grotesque", sans-serif; font-size: 1.15rem; }
+.type-switch span { color: var(--muted); font-size: .875rem; }
+.type-switch input:checked + label { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, white); }
+.type-switch input:checked + label strong { color: var(--accent); }
+.type-switch input:focus-visible + label { outline: 3px solid color-mix(in srgb, var(--accent) 45%, white); outline-offset: 2px; }
+
+/* ---- fields ---- */
+.row.two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.field { margin-bottom: 18px; }
+.field > label { display: block; font-weight: 500; margin-bottom: 6px; }
+.optional { color: var(--muted); font-weight: 400; font-size: .85rem; margin-left: 6px; }
+small { color: var(--muted); }
+
+input[type="text"], input[type="email"], input[type="date"], input[type="number"],
+input[type="password"], select, textarea {
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+}
+textarea { resize: vertical; }
+input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 35%, white);
+  border-color: var(--accent);
+}
+input[type="file"] { font: inherit; max-width: 100%; }
+[hidden] { display: none !important; }
+
+/* ---- save path preview ---- */
+.path {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  margin-bottom: 22px;
+  border-left: 4px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 7%, white);
+  border-radius: 0 8px 8px 0;
+}
+.path-label { font-size: .85rem; color: var(--muted); }
+code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .9rem; word-break: break-word; }
+
+/* ---- files ---- */
+.file-list { list-style: none; padding: 0; margin: 8px 0 0; font-size: .9rem; color: var(--muted); }
+.file-list li { padding: 2px 0; }
+
+/* ---- feedback ---- */
+.error {
+  color: var(--danger);
+  background: #fdecea;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 0 0 16px;
+}
+
+button {
+  font: 500 1rem "IBM Plex Sans", sans-serif;
+  color: #fff;
+  background: var(--accent);
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 22px;
+  cursor: pointer;
+}
+button:hover { filter: brightness(1.1); }
+button:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 45%, white); outline-offset: 2px; }
+button:disabled { opacity: .6; cursor: progress; }
+#submit { width: 100%; }
+
+.done { text-align: left; }
+.done p { color: var(--muted); }
+.done code { color: var(--ink); }
+
+@media (max-width: 520px) {
+  .row.two { grid-template-columns: 1fr; gap: 0; }
+  form, .done { padding: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
