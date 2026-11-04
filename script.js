@@ -46,7 +46,6 @@ function updatePreview() {
   document.body.dataset.type = reportType();
   $('period-weekly').hidden = monthly;
   $('period-monthly').hidden = !monthly;
-  $('next-label').firstChild.textContent = 'Plans for next ' + (monthly ? 'month ' : 'week ');
 
   const who = $('name').value.trim() || 'Your name';
   $('path-preview').textContent =
@@ -73,7 +72,7 @@ $('files').addEventListener('change', () => {
     li.textContent = f.name + ' (' + (f.size / 1024 / 1024).toFixed(1) + ' MB)';
     $('file-list').appendChild(li);
   });
-  if (total > MAX_TOTAL_BYTES) showError('Attachments are over 10 MB in total. Remove some files or share a Drive link in the report instead.');
+  if (total > MAX_TOTAL_BYTES) showError('Files are over 10 MB in total. Remove some or compress them.');
   else hideError();
 });
 
@@ -98,16 +97,15 @@ form.addEventListener('submit', async (e) => {
   const name = $('name').value.trim();
   const email = $('email').value.trim();
   const period = periodLabel();
-  const completed = $('completed').value.trim();
   const code = $('code').value;
   const files = Array.from($('files').files);
 
   if (!name) return showError('Enter your full name.');
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return showError('Enter a valid work email.');
   if (!period) return showError('Choose the period this report covers.');
-  if (!completed) return showError('Describe what you completed.');
+  if (!files.length) return showError('Attach your report file.');
   if (!code) return showError('Enter the access code.');
-  if (files.reduce((n, f) => n + f.size, 0) > MAX_TOTAL_BYTES) return showError('Attachments are over 10 MB in total.');
+  if (files.reduce((n, f) => n + f.size, 0) > MAX_TOTAL_BYTES) return showError('Files are over 10 MB in total.');
   if (ENDPOINT.startsWith('PASTE_')) return showError('This page is not connected yet. Add the Web app URL in script.js.');
 
   const btn = $('submit');
@@ -117,9 +115,7 @@ form.addEventListener('submit', async (e) => {
   try {
     const payload = {
       type: reportType(),
-      name, email, period, completed, code,
-      blockers: $('blockers').value.trim(),
-      next: $('next').value.trim(),
+      name, email, period, code,
       files: await Promise.all(files.map(readFile))
     };
 
@@ -146,7 +142,7 @@ form.addEventListener('submit', async (e) => {
 
 // ---------- start over ----------
 $('again').addEventListener('click', () => {
-  ['completed', 'blockers', 'next', 'code'].forEach((id) => { $(id).value = ''; });
+  ['code'].forEach((id) => { $(id).value = ''; });
   $('files').value = '';
   $('file-list').innerHTML = '';
   $('done').hidden = true;

@@ -13,7 +13,7 @@
   <main class="shell">
     <header class="intro">
       <h1>Submit your report</h1>
-      <p>Your report is saved to your own folder in Google Drive. Weekly and monthly reports are kept apart.</p>
+      <p>Upload your report file. It is saved to your own folder in Google Drive, with weekly and monthly reports kept apart.</p>
     </header>
 
     <form id="report-form" novalidate>
@@ -59,21 +59,9 @@
       </div>
 
       <div class="field">
-        <label for="completed">What you completed</label>
-        <textarea id="completed" name="completed" rows="5" required></textarea>
-      </div>
-      <div class="field">
-        <label for="blockers">Challenges and blockers <span class="optional">optional</span></label>
-        <textarea id="blockers" name="blockers" rows="3"></textarea>
-      </div>
-      <div class="field">
-        <label for="next" id="next-label">Plans for next week <span class="optional">optional</span></label>
-        <textarea id="next" name="next" rows="3"></textarea>
-      </div>
-
-      <div class="field">
-        <label for="files">Attachments <span class="optional">optional, 10 MB total</span></label>
-        <input id="files" type="file" multiple>
+        <label for="files">Your report file</label>
+        <input id="files" type="file" multiple required>
+        <small>PDF, Word, Excel or any other file. 10 MB in total.</small>
         <ul id="file-list" class="file-list"></ul>
       </div>
 

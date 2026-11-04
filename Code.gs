@@ -1,21 +1,21 @@
 /**
  * Report intake — Google Apps Script backend
- * Receives a report from the web page and files it in Google Drive:
+ * Receives a report file from the web page and files it in Google Drive:
  *
  *   <Root folder>/
  *     Ama Mensah (ama@company.com)/
- *       Weekly/   Week ending 2026-11-06 – Ama Mensah  (Google Doc + attachments)
- *       Monthly/  2026-11 November – Ama Mensah        (Google Doc + attachments)
+ *       Weekly/   Week ending 2026-11-06 - Ama Mensah - report.pdf
+ *       Monthly/  2026-11 November - Ama Mensah - report.pdf
  */
 
-// ====== SETTINGS — edit these three, then deploy ======
-const ROOT_FOLDER_ID = 'PASTE_YOUR_DRIVE_FOLDER_ID_HERE'; // the long ID at the end of the folder's URL
-const ACCESS_CODE    = 'TADT-Reports@aliska';                 // colleagues must enter this on the page
-const ALLOWED_DOMAIN = '';                                 // e.g. 'company.com' — leave '' to allow any email
-const NOTIFY_EMAIL   = '';                                 // optional: get an email for each submission
-// ======================================================
+// ====== SETTINGS ======
+const ROOT_FOLDER_ID = '12plgBmWuvSTrMGIFJxST69MUjRh5vaDA'; // the long ID at the end of the folder's URL
+const ACCESS_CODE    = 'TADT-Report@aliska';                // colleagues must enter this on the page
+const ALLOWED_DOMAIN = '';                                  // e.g. 'company.com' - leave '' to allow any email
+const NOTIFY_EMAIL   = '';                                  // optional: get an email for each submission
+// ======================
 
-const MAX_TOTAL_BYTES = 10 * 1024 * 1024; // 10 MB of attachments per report
+const MAX_TOTAL_BYTES = 10 * 1024 * 1024; // 10 MB per submission
 
 function doGet() {
   return json_({ ok: true, message: 'Report endpoint is running.' });
@@ -34,29 +34,18 @@ function doPost(e) {
     const typeFolder = getOrCreateChild_(personFolder, data.type === 'monthly' ? 'Monthly' : 'Weekly');
 
     const stamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm');
-    let baseName = clean_(data.period) + ' – ' + clean_(data.name);
-    if (typeFolder.getFilesByName(baseName).hasNext()) {
-      baseName += ' (resubmitted ' + stamp + ')';
-    }
+    const base = clean_(data.period) + ' - ' + clean_(data.name);
 
-    // 1) The written report as a Google Doc
-    const doc = DocumentApp.create(baseName);
-    const body = doc.getBody();
-    body.appendParagraph(clean_(data.type === 'monthly' ? 'Monthly report' : 'Weekly report'))
-        .setHeading(DocumentApp.ParagraphHeading.TITLE);
-    body.appendParagraph(data.name + ' · ' + data.email + ' · ' + data.period);
-    body.appendParagraph('Submitted ' + stamp).setItalic(true);
-    section_(body, 'What I completed', data.completed);
-    section_(body, 'Challenges and blockers', data.blockers);
-    section_(body, 'Plans for next ' + (data.type === 'monthly' ? 'month' : 'week'), data.next);
-    doc.saveAndClose();
-    DriveApp.getFileById(doc.getId()).moveTo(typeFolder);
-
-    // 2) Attachments, saved beside the Doc
-    (data.files || []).forEach(function (f) {
-      const blob = Utilities.newBlob(Utilities.base64Decode(f.data), f.mime || 'application/octet-stream',
-        baseName + ' – ' + clean_(f.name));
-      typeFolder.createFile(blob);
+    // Save each uploaded file straight into the folder (no extra Doc is created)
+    data.files.forEach(function (f) {
+      const fileName = clean_(f.name);
+      let name = base + ' - ' + fileName;
+      if (typeFolder.getFilesByName(name).hasNext()) {
+        name = base + ' (resubmitted ' + stamp + ') - ' + fileName;
+      }
+      typeFolder.createFile(
+        Utilities.newBlob(Utilities.base64Decode(f.data), f.mime || 'application/octet-stream', name)
+      );
     });
 
     if (NOTIFY_EMAIL) {
@@ -82,9 +71,9 @@ function validate_(d) {
   if (ALLOWED_DOMAIN && d.email.toLowerCase().split('@')[1] !== ALLOWED_DOMAIN.toLowerCase()) {
     throw new Error('Use your @' + ALLOWED_DOMAIN + ' email address.');
   }
-  if (!d.completed || !String(d.completed).trim()) throw new Error('Describe what you completed.');
-  const total = (d.files || []).reduce(function (n, f) { return n + (f.data || '').length * 0.75; }, 0);
-  if (total > MAX_TOTAL_BYTES) throw new Error('Attachments are over 10 MB in total.');
+  if (!d.files || !d.files.length) throw new Error('Attach your report file.');
+  const total = d.files.reduce(function (n, f) { return n + (f.data || '').length * 0.75; }, 0);
+  if (total > MAX_TOTAL_BYTES) throw new Error('Files are over 10 MB in total.');
 }
 
 // One folder per colleague, matched by email so a spelling change in the name does not create a duplicate.
@@ -98,11 +87,6 @@ function getOrCreatePersonFolder_(root, name, email) {
 function getOrCreateChild_(parent, name) {
   const it = parent.getFoldersByName(name);
   return it.hasNext() ? it.next() : parent.createFolder(name);
-}
-
-function section_(body, heading, text) {
-  body.appendParagraph(heading).setHeading(DocumentApp.ParagraphHeading.HEADING2);
-  body.appendParagraph(text && String(text).trim() ? String(text) : '—');
 }
 
 function clean_(s) {
