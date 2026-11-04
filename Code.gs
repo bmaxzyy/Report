@@ -10,7 +10,7 @@
 
 // ====== SETTINGS — edit these three, then deploy ======
 const ROOT_FOLDER_ID = 'PASTE_YOUR_DRIVE_FOLDER_ID_HERE'; // the long ID at the end of the folder's URL
-const ACCESS_CODE    = 'change-this-code';                 // colleagues must enter this on the page
+const ACCESS_CODE    = 'TADT-Reports@aliska';                 // colleagues must enter this on the page
 const ALLOWED_DOMAIN = '';                                 // e.g. 'company.com' — leave '' to allow any email
 const NOTIFY_EMAIL   = '';                                 // optional: get an email for each submission
 // ======================================================
