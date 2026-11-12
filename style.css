@@ -43,6 +43,13 @@ form, .done {
   padding: 28px;
 }
 
+.intro .logo{
+  text-align: center;
+}
+.intro .logo img{
+  height: 90px;
+}
+
 /* ---- report type switch ---- */
 .type-switch {
   display: grid;
