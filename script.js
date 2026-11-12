@@ -1,7 +1,7 @@
 // ====== SETTINGS ======
 // Paste the Web app URL you get after deploying Code.gs (ends in /exec)
 const ENDPOINT = 'https://script.google.com/macros/s/AKfycbx6lcccNpLVeSWoTH7jHQrH6QY23kn6Ugduts8xO_0n_N9YcwG5MDGwitPx1jK3LfFe/exec';
-const MAX_TOTAL_BYTES = 10 * 1024 * 1024;
+const MAX_TOTAL_BYTES = 1024 * 1024 * 1024;
 // ======================
 
 const $ = (id) => document.getElementById(id);
