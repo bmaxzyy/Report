@@ -8,9 +8,12 @@
   --monthly: #3a3f9e;
   --accent: var(--weekly);
   --danger: #b3261e;
+  --documents: #7a4a00;
   --radius: 10px;
 }
 body[data-type="monthly"] { --accent: var(--monthly); }
+body[data-type="documents"] { --accent: var(--documents); }
+
 
 * { box-sizing: border-box; }
 
@@ -53,7 +56,7 @@ form, .done {
 /* ---- report type switch ---- */
 .type-switch {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   border: 0;
   padding: 0;
@@ -148,6 +151,7 @@ button:disabled { opacity: .6; cursor: progress; }
 
 @media (max-width: 520px) {
   .row.two { grid-template-columns: 1fr; gap: 0; }
+  .type-switch { grid-template-columns: 1fr; }
   form, .done { padding: 20px; }
 }
 @media (prefers-reduced-motion: reduce) {

@@ -15,6 +15,13 @@ const ALLOWED_DOMAIN = '';                                  // e.g. 'company.com
 const NOTIFY_EMAIL   = '';                                  // optional: get an email for each submission
 // ======================
 
+// ====== SETTINGS ======
+const ROOT_FOLDER_ID = ''; // the long ID at the end of the folder's URL
+const ACCESS_CODE    = '';                // colleagues must enter this on the page
+const ALLOWED_DOMAIN = '';                                  // e.g. 'company.com' - leave '' to allow any email
+const NOTIFY_EMAIL   = '';                                  // optional: get an email for each submission
+// ======================
+
 const MAX_TOTAL_BYTES = 10 * 1024 * 1024; // 10 MB per submission
 
 function doGet() {

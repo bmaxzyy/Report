@@ -33,23 +33,31 @@ function reportType() {
 }
 
 function periodLabel() {
-  if (reportType() === 'weekly') {
+  const type = reportType();
+  if (type === 'weekly') {
     return $('week-ending').value ? 'Week ending ' + $('week-ending').value : '';
   }
-  const m = $('month').value;
-  return $('year').value ? $('year').value + '-' + m + ' ' + MONTHS[Number(m) - 1] : '';
+  if (type === 'monthly') {
+    const m = $('month').value;
+    return $('year').value ? $('year').value + '-' + m + ' ' + MONTHS[Number(m) - 1] : '';
+  }
+  // documents: use today's date as a filing date
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 }
 
 // ---------- live "will be saved to" preview ----------
 function updatePreview() {
-  const monthly = reportType() === 'monthly';
-  document.body.dataset.type = reportType();
-  $('period-weekly').hidden = monthly;
-  $('period-monthly').hidden = !monthly;
+  const type = reportType();
+  document.body.dataset.type = type;
+
+  $('period-weekly').hidden  = type !== 'weekly';
+  $('period-monthly').hidden = type !== 'monthly';
 
   const who = $('name').value.trim() || 'Your name';
+  const folder = type === 'monthly' ? 'Monthly' : type === 'weekly' ? 'Weekly' : 'Documents';
   $('path-preview').textContent =
-    who + ' / ' + (monthly ? 'Monthly' : 'Weekly') + ' / ' + (periodLabel() || 'Choose a period');
+    who + ' / ' + folder + ' / ' + (periodLabel() || 'Choose a period');
 }
 
 form.addEventListener('input', updatePreview);
